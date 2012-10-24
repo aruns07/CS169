@@ -1,11 +1,12 @@
 class MoviesController < ApplicationController
 
   def index
-
+    @all_ratings = ratingList
     if params[:ratings]
       @checkList = params[:ratings]
     else
-      @checkList = {}
+      @checkList = Hash.new
+      ratingList.each{|a| @checkList[a]='true'}
     end
 
     @hint = params[:sort]
@@ -15,7 +16,7 @@ class MoviesController < ApplicationController
       @movies = Movie.find(:all, :conditions=>["rating in (?)" , @checkList.keys] ,  :order => 'release_date')
     end
 
-    @all_ratings = ratingList
+
 
     
   end
