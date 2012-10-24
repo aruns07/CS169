@@ -3,9 +3,9 @@
 %table#movies
   %thead
     %tr
-      %th= link_to( "Movie Title", "/movies?sort=title" , {:id=>"Title_Header" , :class=> (@hint == 'title' ?"hilite" : "")})
+      %th{:class=> (@hint == 'title' ?"hilite" : "")}= link_to( "Movie Title", "/movies?sort=title" , {:id=>"Title_Header" })
       %th Rating 
-      %th= link_to "Release Date", "/movies?sort=date", {:id=>"release_date_header", :class=> (@hint == 'date' ?"hilite" : "")}
+      %th{:class=> (@hint == 'date' ?"hilite" : "")}= link_to "Release Date", "/movies?sort=date", {:id=>"release_date_header"}
       %th More Info
   %tbody
     - @movies.each_with_index do |movie,count|
