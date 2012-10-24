@@ -1,7 +1,13 @@
 class MoviesController < ApplicationController
 
   def index
-    @movies = Movie.find(:all, :order => 'release_date')
+    @hint = params[:sort]
+    if @hint == 'title'
+      @movies = Movie.find(:all, :order => 'title')
+    else
+      @movies = Movie.find(:all, :order => 'release_date')
+    end
+    
   end
   
   def new
