@@ -7,6 +7,7 @@ class MoviesController < ApplicationController
     else
       @movies = Movie.find(:all, :order => 'release_date')
     end
+
     
   end
   
