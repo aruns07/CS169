@@ -1,12 +1,22 @@
 class MoviesController < ApplicationController
 
   def index
+
+    if params[:ratings]
+      @checkList = params[:ratings]
+    else
+      @checkList = {}
+    end
+
     @hint = params[:sort]
     if @hint == 'title'
-      @movies = Movie.find(:all, :order => 'title')
+      @movies = Movie.find(:all, :conditions=>["rating in (?)" , @checkList.keys ] ,  :order => 'title')
     else
-      @movies = Movie.find(:all, :order => 'release_date')
+      @movies = Movie.find(:all, :conditions=>["rating in (?)" , @checkList.keys] ,  :order => 'release_date')
     end
+
+    @all_ratings = ratingList
+
     
   end
   
@@ -15,13 +25,13 @@ class MoviesController < ApplicationController
   end
   
   def create
-    @movie = Movie.new(params[:movie])
-    if @movie.save
-      flash[:notice] = "#{@movie.title} added to Rotten Potatoes!"
-      redirect_to movie_path(@movie)
-    else
-      render :action => "new"
-    end
+      @movie = Movie.new(params[:movie])
+      if @movie.save
+        flash[:notice] = "#{@movie.title} added to Rotten Potatoes!"
+        redirect_to movie_path(@movie)
+      else
+        render :action => "new"
+      end
   end
   
   def show
@@ -50,6 +60,10 @@ class MoviesController < ApplicationController
       flash[:error] = "Failed to delete #{@movie.title}!"
     end
     redirect_to(movies_url)
+  end
+
+  def ratingList
+    Movie.find(:all, :select=>"DISTINCT rating").map{ |m| m.rating}
   end
 
 end

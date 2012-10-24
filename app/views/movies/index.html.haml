@@ -1,11 +1,17 @@
 %h2 All Movies
+= form_tag movies_path, :method => :get do
+  Include:
+  - @all_ratings.each do |rating|
+    = rating
+    = check_box_tag "ratings[#{rating}]", 'true', @checkList[rating] 
+  = submit_tag  'Refresh', {:name=>'refresh'}
 
 %table#movies
   %thead
     %tr
-      %th{:class=> (@hint == 'title' ?"hilite" : "")}= link_to( "Movie Title", "/movies?sort=title" , {:id=>"title_header" })
+      %th{:class=> (@hint == 'title' ?"hilite" : "")}= link_to( "Movie Title",   url_for(params.merge(:sort => "title")), {:id=>"title_header" })
       %th Rating 
-      %th{:class=> (@hint == 'date' ?"hilite" : "")}= link_to "Release Date", "/movies?sort=date", {:id=>"release_date_header"}
+      %th{:class=> (@hint == 'date' ?"hilite" : "")}= link_to "Release Date", url_for(params.merge(:sort => "date")), {:id=>"release_date_header"}
       %th More Info
   %tbody
     - @movies.each_with_index do |movie,count|
