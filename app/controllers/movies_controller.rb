@@ -2,12 +2,18 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = ratingList
+    @boolRating = false
+    @boolSort = false
+    @tempHash = Hash.new
+   
 
     if params[:ratings]
       @checkList = params[:ratings]
       session[:ratings] = params[:ratings]
-    elsif session[:ratings]
+    elsif session.has_key?("ratings")
       @checkList = session[:ratings]
+      @tempHash["ratings"] = @checkList
+      @boolRating = true
     else
       @checkList = Hash.new
       ratingList.each{|a| @checkList[a]='true'}
@@ -17,12 +23,24 @@ class MoviesController < ApplicationController
     if params[:sort]
       @hint = params[:sort]
       session[:sort] = @hint
-    elsif session[:sort]
+    elsif session.has_key?("sort") 
       @hint = session[:sort]
+      @tempHash["sort"] = @hint
+      @boolSort = true
     else
       @hint = 'date'
+      session[:sort] = @hint
     end
     
+
+    if @boolRating ==true or @boolSort == true
+      @temp = url_for(params.merge(@tempHash))
+      session.delete("ratings")
+      session.delete("sort")
+      redirect_to ( @temp)
+    end
+
+
 
     if @hint == 'title'
       @movies = Movie.find(:all, :conditions=>["rating in (?)" , @checkList.keys ] ,  :order => 'title')
